@@ -19,9 +19,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         title = "Rmind.me"
         listView = findViewById(R.id.listView)
-        arrayList.add(MyData(1, " Mashu", "987576443"))
-        arrayList.add(MyData(2, " Azhar", "8787576768"))
-        arrayList.add(MyData(3, " Niyaz", "65757657657"))
+        arrayList.add(MyData("Shopping list", " Buy milk", "2020-01-01"))
+        arrayList.add(MyData("Movie night", " Go to movies", "2020-01-02"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
+        arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
         adapter = MyAdapter(this, arrayList)
         listView.adapter = adapter
     }
@@ -29,9 +35,9 @@ class MainActivity : AppCompatActivity() {
 
 //Class MyAdapter
 class MyAdapter(private val context: Context, private val arrayList: java.util.ArrayList<MyData>) : BaseAdapter() {
-    private lateinit var serialNum: TextView
-    private lateinit var name: TextView
-    private lateinit var contactNum: TextView
+    private lateinit var reminderTitle: TextView
+    private lateinit var reminderText: TextView
+    private lateinit var reminderDate: TextView
     override fun getCount(): Int {
         return arrayList.size
     }
@@ -44,14 +50,14 @@ class MyAdapter(private val context: Context, private val arrayList: java.util.A
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
         var convertView = convertView
         convertView = LayoutInflater.from(context).inflate(R.layout.reminder, parent, false)
-        serialNum = convertView.findViewById(R.id.serialNumber)
-        name = convertView.findViewById(R.id.studentName)
-        contactNum = convertView.findViewById(R.id.mobileNum)
-        serialNum.text = " " + arrayList[position].num
-        name.text = arrayList[position].name
-        contactNum.text = arrayList[position].mobileNumber
+        reminderTitle = convertView.findViewById(R.id.reminderTitle)
+        reminderText = convertView.findViewById(R.id.reminderText)
+        reminderDate = convertView.findViewById(R.id.reminderDate)
+        reminderTitle.text = " " + arrayList[position].reminderTitle
+        reminderText.text = arrayList[position].reminderText
+        reminderDate.text = arrayList[position].reminderDate
         return convertView
     }
 }
 //Class MyData
-class MyData(var num: Int, var name: String, var mobileNumber: String)
+class MyData(var reminderTitle: String, var reminderText: String, var reminderDate: String)
