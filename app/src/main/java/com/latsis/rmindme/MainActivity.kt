@@ -13,7 +13,7 @@ import android.os.Bundle
 class MainActivity : AppCompatActivity() {
     lateinit var listView: ListView
     var arrayList: ArrayList<MyData> = ArrayList()
-    var adapter: MyAdapter? = null
+    var adapter: ReminderListAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,13 +28,13 @@ class MainActivity : AppCompatActivity() {
         arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
         arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
         arrayList.add(MyData("Morning meeting", " Early wakeup", "2020-01-03"))
-        adapter = MyAdapter(this, arrayList)
+        adapter = ReminderListAdapter(this, arrayList)
         listView.adapter = adapter
     }
 }
 
-//Class MyAdapter
-class MyAdapter(private val context: Context, private val arrayList: java.util.ArrayList<MyData>) : BaseAdapter() {
+//Class ReminderListAdapter
+class ReminderListAdapter(private val context: Context, private val arrayList: java.util.ArrayList<MyData>) : BaseAdapter() {
     private lateinit var reminderTitle: TextView
     private lateinit var reminderText: TextView
     private lateinit var reminderDate: TextView
