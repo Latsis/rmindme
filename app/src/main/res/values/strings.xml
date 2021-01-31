@@ -7,4 +7,7 @@
     <string name="app_logo_icon">App logo icon</string>
     <string name="sharedPreference" translatable="false">com.latsis.rmindme</string>
     <string name="dbFileName">com.latsis.rmindme</string>
+    <string name="add_new_reminder">Add new reminder</string>
+    <string name="profile">Profile</string>
+    <string name="sign_out">Sign out</string>
 </resources>

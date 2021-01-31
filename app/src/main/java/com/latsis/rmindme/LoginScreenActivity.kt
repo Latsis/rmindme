@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.latsis.rmindme.databinding.ActivityLoginScreenBinding
 import com.latsis.rmindme.databinding.ActivityMainBinding
-
+import com.latsis.rmindme.databinding.ActivityProfileScreenBinding
 
 class LoginScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginScreenBinding

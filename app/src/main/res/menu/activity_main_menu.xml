@@ -2,15 +2,15 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:title="Add new reminder"
+        android:title="@string/add_new_reminder"
         android:id="@+id/action_add_reminder" />
 
     <item
-        android:title="Profile"
+        android:title="@string/profile"
         android:id="@+id/action_edit_profile" />
 
     <item
-        android:title="Sign out"
+        android:title="@string/sign_out"
         android:id="@+id/action_sign_out" />
 
 </menu>
