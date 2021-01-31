@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "reminderInfo")
 data class ReminderInfo (
-    @PrimaryKey(autoGenerate = true) var uid:Int,
+    @PrimaryKey(autoGenerate = true) var uid:Int?,
     @ColumnInfo(name="username") var username:String,
     @ColumnInfo(name="title")  var title:String,
     @ColumnInfo(name="description") var description:String,

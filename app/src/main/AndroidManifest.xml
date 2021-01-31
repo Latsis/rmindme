@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rmindme">
         <activity android:name=".ProfileScreenActivity"></activity>
-        <activity android:name=".LoginScreenActivity">
+        <activity android:name=".LoginScreenActivity" android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -14,10 +14,14 @@ abstract class AppDatabase : RoomDatabase() {
    companion object {
       var INSTANCE: AppDatabase? = null
 
-      fun getAppDataBase(context: Context): AppDatabase? {
+      fun getAppDatabase(context: Context): AppDatabase? {
          if (INSTANCE == null){
             synchronized(AppDatabase::class){
-               INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "rmindme_database").build()
+               INSTANCE = Room.databaseBuilder(
+                       context.applicationContext,
+                       AppDatabase::class.java,
+                       "rmindme_database"
+               ).build()
             }
          }
          return INSTANCE

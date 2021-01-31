@@ -27,13 +27,18 @@ class LoginScreenActivity : AppCompatActivity() {
             checkLoginCredentials()
         }
 
+        binding.SignInButton.setOnClickListener {
+            Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_LONG).show()
+            Log.d("Test", "Sign Up Button Clicked")
+        }
+
         checkLoginStatus()
     }
 
-/*    override fun onResume() {
+    override fun onResume() {
         super.onResume()
         checkLoginStatus()
-    }*/
+    }
 
     private fun checkLoginStatus() {
         val loginStatus = applicationContext.getSharedPreferences(

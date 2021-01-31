@@ -22,6 +22,7 @@ class ProfileScreenActivity : AppCompatActivity() {
 
             binding.cancelProfileModificationsButton.setOnClickListener {
             Log.d("Test", "Cancel Button Clicked")
+                finish()
         }
     }
 }
