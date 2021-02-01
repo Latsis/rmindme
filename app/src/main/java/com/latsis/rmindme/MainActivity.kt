@@ -35,15 +35,16 @@ class MainActivity : AppCompatActivity() {
         title = "Rmind.me"
         listView = binding.listView
 
-        createReminderPlaceholders()
+        // Add placeholder items to reminder table
+        //createReminderPlaceholders()
+
         refreshListView()
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, id ->
-            //retrieve selected Item
 
             val selectedReminderInfo = listView.adapter.getItem(position) as ReminderInfo
             val message =
-                "Do you want to delete ${selectedReminderInfo.title} reminder, on ${selectedReminderInfo.date}?"
+                "Do you want to delete entry for ${selectedReminderInfo.title}?"
 
             // Show AlertDialog to delete the reminder
             val builder = AlertDialog.Builder(this@MainActivity)
@@ -51,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                 .setMessage(message)
                 .setPositiveButton("Delete") { _, _ ->
                     // Update UI
-
 
                     //delete from database
                     AsyncTask.execute {
@@ -110,18 +110,12 @@ class MainActivity : AppCompatActivity() {
                     listView.adapter = adaptor
                 } else {
                     listView.adapter = null
-                    Toast.makeText(applicationContext, "No items now", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "No reminders to show", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
     }
-
-
-    companion object {
-        //val paymenthistoryList = mutableListOf<PaymentInfo>()
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_main_menu, menu)
@@ -129,11 +123,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here.
         val id = item.getItemId()
 
         if (id == R.id.action_add_reminder) {
-            Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show()
             return true
         }
         if (id == R.id.action_edit_profile) {
@@ -143,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         if (id == R.id.action_sign_out) {
-            Toast.makeText(this, "You have signed out", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "You have signed out", Toast.LENGTH_SHORT).show()
             applicationContext.getSharedPreferences(
                 getString(R.string.sharedPreference),
                 Context.MODE_PRIVATE
@@ -198,96 +191,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-
-/*class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var listView: ListView
-    var arrayList: ArrayList<ReminderPlaceHolders> = ArrayList()
-    var adapter: ReminderListAdaptor? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
-        val view=binding.root
-        setContentView(view)
-
-        title = "Rmind.me"
-        listView = findViewById(R.id.listView)
-        arrayList.add(ReminderPlaceHolders("Shopping list", " Buy milk", "2020-01-01"))
-        arrayList.add(ReminderPlaceHolders("Movie night", " Go to movies", "2020-01-02"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        arrayList.add(ReminderPlaceHolders("Morning meeting", " Early wakeup", "2020-01-03"))
-        adapter = ReminderListAdaptor(this, arrayList)
-        listView.adapter = adapter
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.activity_main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here.
-        val id = item.getItemId()
-
-        if (id == R.id.action_add_reminder) {
-            Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_LONG).show()
-            return true
-        }
-        if (id == R.id.action_edit_profile) {
-            startActivity(
-                Intent(applicationContext, ProfileScreenActivity::class.java)
-            )
-            return true
-        }
-        if (id == R.id.action_sign_out) {
-            Toast.makeText(this, "You have signed out", Toast.LENGTH_LONG).show()
-            applicationContext.getSharedPreferences(
-                    getString(R.string.sharedPreference),
-                    Context.MODE_PRIVATE
-            ).edit().putInt("LoginStatus", 0).apply()
-            startActivity(
-                    Intent(applicationContext, LoginScreenActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            )
-            finish()
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-
-    }
-}*/
-
-//Class ReminderListAdaptor
-class ReminderListAdaptor(private val context: Context, private val arrayList: java.util.ArrayList<ReminderPlaceHolders>) : BaseAdapter() {
-    private lateinit var reminderTitle: TextView
-    private lateinit var reminderText: TextView
-    private lateinit var reminderDate: TextView
-    override fun getCount(): Int {
-        return arrayList.size
-    }
-    override fun getItem(position: Int): Any {
-        return position
-    }
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
-        var convertView = convertView
-        convertView = LayoutInflater.from(context).inflate(R.layout.reminder, parent, false)
-        reminderTitle = convertView.findViewById(R.id.reminderTitle)
-        reminderText = convertView.findViewById(R.id.reminderText)
-        reminderDate = convertView.findViewById(R.id.reminderDate)
-        reminderTitle.text = " " + arrayList[position].reminderTitle
-        reminderText.text = arrayList[position].reminderText
-        reminderDate.text = arrayList[position].reminderDate
-        return convertView
-    }
-}
-//Class ReminderPlaceHolders
-class ReminderPlaceHolders(var reminderTitle: String, var reminderText: String, var reminderDate: String)

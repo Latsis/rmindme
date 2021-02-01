@@ -44,6 +44,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textViewCurrentUsername"
+        android:text="current user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="630dp"
+        android:textColor="@color/white"
+        android:textColorHint="#BDBDBD"
+        android:textSize="24sp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editTextProfileUsername"
         android:layout_width="240dp"
@@ -52,7 +69,7 @@
         android:layout_marginBottom="430dp"
         android:backgroundTint="#757575"
         android:ems="10"
-        android:hint="@string/username"
+        android:hint="New username"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:textColor="@color/white"
@@ -120,5 +137,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
