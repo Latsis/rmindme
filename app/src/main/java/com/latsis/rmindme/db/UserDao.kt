@@ -4,13 +4,17 @@ import androidx.room.*
 
 @Dao
 interface UserDao {
+    @Transaction
+    @Insert
+    fun insert(userInfo: UserInfo): Long
+
     @Query("SELECT * FROM userInfo")
     fun getAll(): List<UserInfo>
 
-    @Query("SELECT * FROM userInfo WHERE uid IN (:userIds)")
-    fun loadAllByIds(userIds: IntArray): List<UserInfo>
+    @Query("SELECT * FROM userInfo WHERE username = :name")
+    fun findIfExists(name: String): Boolean
 
-    @Query("SELECT * FROM userInfo WHERE username LIKE :name LIMIT 1")
+    @Query("SELECT * FROM userInfo WHERE username = :name")
     fun findByName(name: String): UserInfo
 
     @Insert

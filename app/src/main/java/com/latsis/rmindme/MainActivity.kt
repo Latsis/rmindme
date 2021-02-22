@@ -2,26 +2,17 @@ package com.latsis.rmindme
 
 import android.content.Context
 import android.content.Intent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
 import android.os.AsyncTask
-import android.provider.ContactsContract
 import android.widget.*
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import com.latsis.rmindme.databinding.ActivityLoginScreenBinding
 import com.latsis.rmindme.databinding.ActivityMainBinding
-import com.latsis.rmindme.databinding.ReminderBinding
 import com.latsis.rmindme.db.AppDatabase
 import com.latsis.rmindme.db.ReminderInfo
-import kotlinx.coroutines.selects.select
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -49,7 +40,6 @@ class MainActivity : AppCompatActivity() {
                 Intent(applicationContext, ReminderItemActivity::class.java).putExtra("selected_reminder",message)
             )
 
-            //refresh payments list
             refreshListView()
         }
 
@@ -90,6 +80,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    fun getUserId(): String {
+        //TODO: change this to logged in user's id check
+        val prefs = applicationContext.getSharedPreferences(
+                getString(R.string.sharedPreference), Context.MODE_PRIVATE)
+        return prefs.getString("username", null).toString()
+    }
+
     override fun onResume() {
         super.onResume()
         refreshListView()
@@ -110,7 +108,8 @@ class MainActivity : AppCompatActivity() {
                     getString(R.string.dbFileName)
                 )
                 .build()
-            val reminderInfos = db.reminderDao().getReminderInfos()
+            //val reminderInfos = db.reminderDao().getReminderInfos()
+            val reminderInfos = db.reminderDao().getUserReminderInfos(getUserId())
             db.close()
             return reminderInfos
         }
@@ -176,34 +175,46 @@ class MainActivity : AppCompatActivity() {
             message = "This is a placeholder for a reminder",
             location_x = "X coordinate for location",
             location_y = "Y coordinate for location",
-            reminder_time = "Time to alert",
-            creation_time = "When was reminder created",
+            reminder_time = "2021-02-02T02:02",
+            creation_time = "2021-01-01T12:00:00.001",
             creator_id = "testuser",
-            reminder_seen = "0 or 1"
+            reminder_seen = "0"
         )
 
         val reminderInfo2 = ReminderInfo(
                 null,
-                title = "Test Reminder 2",
-                message = "This is a placeholder for 2nd reminder",
+                title = "Hetki lyö",
+                message = "Viime hetki lyö",
                 location_x = "X coordinate for location",
                 location_y = "Y coordinate for location",
-                reminder_time = "Time to alert",
-                creation_time = "When was reminder created",
+                reminder_time = "2021-02-02T02:02",
+                creation_time = "2021-01-01T12:00:00.001",
                 creator_id = "testuser",
-                reminder_seen = "0 or 1"
+                reminder_seen = "0"
         )
 
         val reminderInfo3 = ReminderInfo(
                 null,
-                title = "Test Reminder 3",
-                message = "This is a placeholder for 3rd reminder",
+                title = "Tää yö",
+                message = "Ollaan vaan ja hengaillaan",
                 location_x = "X coordinate for location",
                 location_y = "Y coordinate for location",
-                reminder_time = "Time to alert",
-                creation_time = "When was reminder created",
+                reminder_time = "2021-02-02T22:45",
+                creation_time = "2021-01-01T02:00:00.001",
                 creator_id = "testuser",
-                reminder_seen = "0 or 1"
+                reminder_seen = "0"
+        )
+
+        val reminderInfo4 = ReminderInfo(
+                null,
+                title = "admin only",
+                message = "Administrator's reminder",
+                location_x = "somewhere",
+                location_y = "here or there",
+                reminder_time = "2021-02-02T22:45",
+                creation_time = "2021-01-01T02:00:00.001",
+                creator_id = "admin",
+                reminder_seen = "0"
         )
 
         AsyncTask.execute{
@@ -212,9 +223,10 @@ class MainActivity : AppCompatActivity() {
                 AppDatabase::class.java,
                 getString(R.string.dbFileName)
             ).build()
-            val uuid1 = db.reminderDao().insert(reminderInfo1).toInt()
-            val uuid2 = db.reminderDao().insert(reminderInfo2).toInt()
-            val uuid3 = db.reminderDao().insert(reminderInfo3).toInt()
+            db.reminderDao().insert(reminderInfo1).toInt()
+            db.reminderDao().insert(reminderInfo2).toInt()
+            db.reminderDao().insert(reminderInfo3).toInt()
+            db.reminderDao().insert(reminderInfo4).toInt()
             db.close()
         }
     }

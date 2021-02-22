@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Rmindme">
-        <activity android:name=".ReminderItemActivity"></activity>
+        <activity android:name=".RegisterScreenActivity"></activity>
+        <activity android:name=".ReminderItemActivity" />
         <activity android:name=".ProfileScreenActivity" />
         <activity android:name=".MainActivity" />
         <activity

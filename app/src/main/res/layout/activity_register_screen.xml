@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    tools:context=".RegisterScreenActivity">
+
+    <Button
+        android:id="@+id/registerProfileButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="529dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="51dp"
+        android:backgroundTint="#757575"
+        android:text="Sign up"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/cancelProfileButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="529dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="51dp"
+        android:backgroundTint="#424242"
+        android:text="Cancel"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextRegisterUsername"
+        android:layout_width="240dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="430dp"
+        android:backgroundTint="#757575"
+        android:ems="10"
+        android:hint="Username"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:textColor="@color/white"
+        android:textColorHint="#BDBDBD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextRegisterPassword"
+        android:layout_width="240dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginBottom="330dp"
+        android:backgroundTint="#757575"
+        android:ems="10"
+        android:hint="Password"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:textColorHint="#BDBDBD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextRegisterRepeatPassword"
+        android:layout_width="240dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="350dp"
+        android:layout_marginBottom="230dp"
+        android:backgroundTint="#757575"
+        android:ems="10"
+        android:hint="Repeat password"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:textColorHint="#BDBDBD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="200dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="450dp"
+        android:layout_marginBottom="130dp"
+        android:backgroundTint="#757575"
+        android:textColor="#BDBDBD"
+        android:ems="10"
+        android:textSize="8sp"
+        android:text="I understand that this software comes without any sort of warranty and accept that the developer may apply additional terms and conditions to its users at any time during the lifecycle of the product."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
