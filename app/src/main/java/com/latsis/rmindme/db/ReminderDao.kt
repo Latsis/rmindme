@@ -1,9 +1,7 @@
 package com.latsis.rmindme.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.lifecycle.LiveData
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 
@@ -18,5 +16,11 @@ interface ReminderDao {
 
     @Query("SELECT * FROM reminderInfo")
     fun getReminderInfos(): List<ReminderInfo>
+
+    @Query("SELECT * FROM reminderInfo WHERE uid = :id")
+    fun getReminderInfo(id: Int): ReminderInfo
+
+    @Update
+    fun updateReminderInfo(vararg reminderInfo: ReminderInfo)
 
 }

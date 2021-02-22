@@ -17,8 +17,8 @@ class ReminderListAdapter(context: Context, private val list: List<ReminderInfo>
         var rowBinding = ReminderBinding.inflate(inflater, container, false)
         //set reminder info values to the list item
         rowBinding.reminderTitle.text = list[position].title
-        rowBinding.reminderText.text = list[position].description
-        rowBinding.reminderDate.text = list[position].date
+        rowBinding.reminderText.text = list[position].message
+        rowBinding.reminderDate.text = list[position].reminder_time
 
         return rowBinding.root
     }

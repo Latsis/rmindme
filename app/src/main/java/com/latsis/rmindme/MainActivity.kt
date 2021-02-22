@@ -43,8 +43,20 @@ class MainActivity : AppCompatActivity() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, id ->
 
             val selectedReminderInfo = listView.adapter.getItem(position) as ReminderInfo
-            val message =
-                "Do you want to delete entry for ${selectedReminderInfo.title}?"
+            val message = selectedReminderInfo.uid
+
+            startActivity(
+                Intent(applicationContext, ReminderItemActivity::class.java).putExtra("selected_reminder",message)
+            )
+
+            //refresh payments list
+            refreshListView()
+        }
+
+        listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, position, id ->
+
+            val selectedReminderInfo = listView.adapter.getItem(position) as ReminderInfo
+            val message = "Do you want to delete entry for ${selectedReminderInfo.title}?"
 
             // Show AlertDialog to delete the reminder
             val builder = AlertDialog.Builder(this@MainActivity)
@@ -73,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                     dialog.dismiss()
                 }
                 .show()
+            true
 
         }
     }
@@ -126,7 +139,10 @@ class MainActivity : AppCompatActivity() {
         val id = item.getItemId()
 
         if (id == R.id.action_add_reminder) {
-            Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show()
+            startActivity(
+                Intent(applicationContext, ReminderItemActivity::class.java)
+            )
             return true
         }
         if (id == R.id.action_edit_profile) {
@@ -156,26 +172,38 @@ class MainActivity : AppCompatActivity() {
     private fun createReminderPlaceholders() {
         val reminderInfo1 = ReminderInfo(
             null,
-            username = "testuser",
             title = "Test Reminder 1",
-            description = "This is a placeholder for a reminder",
-            date = "2021-02-01 Monday 10:00 UTC+2"
+            message = "This is a placeholder for a reminder",
+            location_x = "X coordinate for location",
+            location_y = "Y coordinate for location",
+            reminder_time = "Time to alert",
+            creation_time = "When was reminder created",
+            creator_id = "testuser",
+            reminder_seen = "0 or 1"
         )
 
         val reminderInfo2 = ReminderInfo(
-            null,
-            username = "testuser",
-            title = "Test Reminder 2",
-            description = "This is 2nd placeholder for a reminder",
-            date = "2021-02-01 Monday 10:00 UTC+2"
+                null,
+                title = "Test Reminder 2",
+                message = "This is a placeholder for 2nd reminder",
+                location_x = "X coordinate for location",
+                location_y = "Y coordinate for location",
+                reminder_time = "Time to alert",
+                creation_time = "When was reminder created",
+                creator_id = "testuser",
+                reminder_seen = "0 or 1"
         )
 
         val reminderInfo3 = ReminderInfo(
-            null,
-            username = "testuser",
-            title = "Test Reminder 3",
-            description = "This is 3rd placeholder for a reminder",
-            date = "2021-02-01 Monday 10:00 UTC+2"
+                null,
+                title = "Test Reminder 3",
+                message = "This is a placeholder for 3rd reminder",
+                location_x = "X coordinate for location",
+                location_y = "Y coordinate for location",
+                reminder_time = "Time to alert",
+                creation_time = "When was reminder created",
+                creator_id = "testuser",
+                reminder_seen = "0 or 1"
         )
 
         AsyncTask.execute{
