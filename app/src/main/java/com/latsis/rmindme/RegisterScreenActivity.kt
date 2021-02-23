@@ -27,42 +27,21 @@ class RegisterScreenActivity : AppCompatActivity() {
         title = "Register"
 
         binding.registerProfileButton.setOnClickListener {
-            //Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show()
             val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
             val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
             val passwordRepeatInput = findViewById<EditText>(R.id.editTextRegisterRepeatPassword).text
-            val userInfoInput = UserInfo(
-                null,
-                username = usernameInput.toString(),
-                password = passwordInput.toString()
-            )
+
             if (usernameInput.isNotEmpty()) {
                 if (passwordInput.isNotEmpty()) {
                     if (passwordInput.toString().equals(passwordRepeatInput.toString())) {
-                        //CreateIfDoesNotExist().execute()
-                        AsyncTask.execute{
-                            val db = Room.databaseBuilder(
-                                applicationContext,
-                                AppDatabase::class.java,
-                                getString(R.string.dbFileName)
-                            ).build()
-                            //if (db.userDao().findIfExists(usernameInput.toString()).equals("false")) {
-                            db.userDao().insert(userInfoInput)
-                            finish()
-                                //db.close()
-                            //}
-                            //else
-                        }
+                        CreateIfDoesNotExist().execute()
                     } else {
-                        Toast.makeText(
-                            applicationContext,
+                        Toast.makeText(applicationContext,
                             "Passwords don't match!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(applicationContext, "Invalid credentials", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(applicationContext, "Invalid credentials", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(applicationContext, "Invalid credentials", Toast.LENGTH_SHORT).show()
@@ -74,49 +53,43 @@ class RegisterScreenActivity : AppCompatActivity() {
         }
     }
 
-/*    @SuppressLint("StaticFieldLeak")
-    inner class CreateIfDoesNotExist : AsyncTask<String?, String?, String>() {
-        override fun doInBackground(vararg params: String?): String {
+    @SuppressLint("StaticFieldLeak")
+    inner class CreateIfDoesNotExist : AsyncTask<String?, String?, Boolean>() {
+        override fun doInBackground(vararg params: String?): Boolean {
             val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
+            val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
             val db = Room
                 .databaseBuilder(
                     applicationContext,
                     AppDatabase::class.java,
                     getString(R.string.dbFileName)
-                )
-                .build()
-            val exists = db.userDao().findIfExists(usernameInput.toString())
-            Log.d("IfExists", exists.toString())
-            //db.close()
-            return exists.toString()
-        }
-
-        override fun onPostExecute(exists: String?) {
-            super.onPostExecute(exists)
-            if (exists.equals("true")) {
-                Toast.makeText(
-                    applicationContext,
-                    "Username already taken!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
-                val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
-                val userInfoInput = UserInfo(
-                    null,
-                    username = usernameInput.toString(),
-                    password = passwordInput.toString()
-                )
-                val db = Room.databaseBuilder(
-                    applicationContext,
-                    AppDatabase::class.java,
-                    getString(R.string.dbFileName)
                 ).build()
-                db.userDao().insert(userInfoInput).toInt()
+            val exists = db.userDao().findIfExists(usernameInput.toString())
+            if (!exists) {
+                val userInfoInput = UserInfo(
+                        null,
+                        username = usernameInput.toString(),
+                        password = passwordInput.toString()
+                )
+                db.userDao().insert(userInfoInput)
                 db.close()
-
+                finish()
             }
-            finish()
+            Log.d("IfExists", exists.toString())
+            db.close()
+            return exists
         }
-    }*/
+
+        override fun onPostExecute(exists: Boolean?) {
+            super.onPostExecute(exists)
+            Log.d("exists", exists.toString())
+            if (exists==true) {
+                Toast.makeText(
+                        applicationContext,
+                        "Username already taken!",
+                        Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 }

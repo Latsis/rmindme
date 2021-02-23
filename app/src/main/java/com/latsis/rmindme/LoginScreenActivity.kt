@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.room.Room
 import com.latsis.rmindme.databinding.ActivityLoginScreenBinding
 import com.latsis.rmindme.db.AppDatabase
+import com.latsis.rmindme.db.ReminderInfo
 import com.latsis.rmindme.db.UserInfo
 
 class LoginScreenActivity : AppCompatActivity() {
@@ -22,8 +23,9 @@ class LoginScreenActivity : AppCompatActivity() {
         val view=binding.root
         setContentView(view)
 
-        //createTestCredentials() //add username "testuser" with password "testpassword" to sharedPreferences
+        // Add placeholder items and test credentials to db
         //createAdminCredentials() //add username "testuser:testpassword" and "admin_admin" to db
+        //createReminderPlaceholders()
 
         binding.LoginButton.setOnClickListener {
             Log.d("Test", "Login Button Clicked")
@@ -31,8 +33,6 @@ class LoginScreenActivity : AppCompatActivity() {
             if (usernameInput.trim().isNotEmpty()) {
                 val passwordInput = findViewById<android.widget.EditText>(com.latsis.rmindme.R.id.editTextPassword).text
                 if (passwordInput.trim().isNotEmpty()) {
-                    //checkDbLoginCredentials()
-                    //CredentialCheck().execute()
                     checkLoginCredentials()
                 } else {
                     Toast.makeText(applicationContext, "Invalid Credentials", Toast.LENGTH_SHORT).show()
@@ -43,7 +43,6 @@ class LoginScreenActivity : AppCompatActivity() {
         }
 
         binding.SignInButton.setOnClickListener {
-            //Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_LONG).show()
             Log.d("Test", "Sign Up Button Clicked")
             startActivity(
                     Intent(applicationContext, RegisterScreenActivity::class.java)
@@ -68,46 +67,7 @@ class LoginScreenActivity : AppCompatActivity() {
         }
     }
 
-/*
-    private fun checkLoginCredentials() {
-        val username_input = findViewById<EditText>(R.id.editTextUsername).text
-        val password_input = findViewById<EditText>(R.id.editTextPassword).text
-        val prefs = applicationContext.getSharedPreferences(
-                getString(R.string.sharedPreference), Context.MODE_PRIVATE)
-        val username_stored = prefs.getString("username",null)
-        val password_stored = prefs.getString("password",null)
-        Log.d("checkLoginCredentials username is ", username_input.toString())
-        Log.d("username_stored is ", username_stored)
-        if (username_input.toString().equals(username_stored)) {
-            if (password_input.toString().equals(password_stored)) {
-                applicationContext.getSharedPreferences(
-                        getString(R.string.sharedPreference),
-                        Context.MODE_PRIVATE
-                ).edit().putInt("LoginStatus", 1).apply()
-                startActivity(
-                        Intent(applicationContext, MainActivity::class.java)
-                )
-            } else{
-                Toast.makeText(this,"Invalid Credentials",Toast.LENGTH_SHORT).show()
-            }
-        } else{
-            Toast.makeText(this,"Invalid Credentials",Toast.LENGTH_SHORT).show()
-        }
-    }
 
-
-    private fun createTestCredentials() {
-        applicationContext.getSharedPreferences(
-                getString(R.string.sharedPreference),
-                Context.MODE_PRIVATE
-        ).edit().putString("username","testuser").apply()
-
-        applicationContext.getSharedPreferences(
-                getString(R.string.sharedPreference),
-                Context.MODE_PRIVATE
-        ).edit().putString("password","testpassword").apply()
-    }
-*/
     private fun createAdminCredentials() {
         val userInfo1 = UserInfo(
                 null,
@@ -132,45 +92,69 @@ class LoginScreenActivity : AppCompatActivity() {
         }
     }
 
-/*
-    private fun checkDbLoginCredentials() {
-        val username_input = findViewById<EditText>(R.id.editTextUsername).text
-        val password_input = findViewById<EditText>(R.id.editTextPassword).text
+    private fun createReminderPlaceholders() {
+        val reminderInfo1 = ReminderInfo(
+                null,
+                title = "Test Reminder 1",
+                message = "This is a placeholder for a reminder",
+                location_x = "X coordinate for location",
+                location_y = "Y coordinate for location",
+                reminder_time = "2021-02-02T02:02",
+                creation_time = "2021-01-01T12:00:00.001",
+                creator_id = "testuser",
+                reminder_seen = "0"
+        )
 
-        AsyncTask.execute {
-            val db = Room
-                    .databaseBuilder(
-                            applicationContext,
-                            AppDatabase::class.java,
-                            getString(R.string.dbFileName)
-                    )
-                    .build()
-            if (db.userDao().findIfExists(username_input.toString())) {
-                val userInfo = db.userDao().findByName(username_input.toString())
-                //val username_stored = userInfo.username
-                val password_stored = userInfo.password
-                db.close()
-                if (password_input.toString().equals(password_stored)) {
-                    applicationContext.getSharedPreferences(
-                            getString(R.string.sharedPreference),
-                            Context.MODE_PRIVATE
-                    ).edit().putInt("LoginStatus", 1).apply()
-                    applicationContext.getSharedPreferences(
-                            getString(R.string.sharedPreference),
-                            Context.MODE_PRIVATE
-                    ).edit().putString("username",userInfo.username).apply()
-                    startActivity(
-                            Intent(applicationContext, MainActivity::class.java)
-                    )
-                } else {
-                    //Toast.makeText(this,"Invalid Credentials",Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                //Toast.makeText(this,"Invalid Credentials",Toast.LENGTH_SHORT).show()
-            }
+        val reminderInfo2 = ReminderInfo(
+                null,
+                title = "Hetki lyö",
+                message = "Viime hetki lyö",
+                location_x = "22.45",
+                location_y = "22.22",
+                reminder_time = "2021-02-02T02:02",
+                creation_time = "2021-01-01T12:00:00.001",
+                creator_id = "testuser",
+                reminder_seen = "0"
+        )
+
+        val reminderInfo3 = ReminderInfo(
+                null,
+                title = "Tää yö",
+                message = "Ollaan vaan ja hengaillaan",
+                location_x = "22.22",
+                location_y = "45.45",
+                reminder_time = "2021-02-02T22:45",
+                creation_time = "2021-01-01T02:00:00.001",
+                creator_id = "testuser",
+                reminder_seen = "0"
+        )
+
+        val reminderInfo4 = ReminderInfo(
+                null,
+                title = "Administrator's reminder",
+                message = "For British eyes only",
+                location_x = "somewhere",
+                location_y = "here or there",
+                reminder_time = "2021-02-02T22:45",
+                creation_time = "2021-01-01T02:00:00.001",
+                creator_id = "admin",
+                reminder_seen = "0"
+        )
+
+        AsyncTask.execute{
+            val db = Room.databaseBuilder(
+                    applicationContext,
+                    AppDatabase::class.java,
+                    getString(R.string.dbFileName)
+            ).build()
+            db.reminderDao().insert(reminderInfo1).toInt()
+            db.reminderDao().insert(reminderInfo2).toInt()
+            db.reminderDao().insert(reminderInfo3).toInt()
+            db.reminderDao().insert(reminderInfo4).toInt()
+            db.close()
         }
     }
-*/
+
 
     private fun checkLoginCredentials() {
         var loginTask = CredentialCheck()
@@ -178,6 +162,7 @@ class LoginScreenActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     inner class CredentialCheck : AsyncTask<String?, String?, UserInfo>() {
         override fun doInBackground(vararg params: String?): UserInfo {
             val usernameInput = findViewById<EditText>(R.id.editTextUsername).text

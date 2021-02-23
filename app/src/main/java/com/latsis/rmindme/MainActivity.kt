@@ -1,5 +1,6 @@
 package com.latsis.rmindme
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.Menu
@@ -22,12 +23,8 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         val view=binding.root
         setContentView(view)
-
         title = "Rmind.me"
         listView = binding.listView
-
-        // Add placeholder items to reminder table
-        //createReminderPlaceholders()
 
         refreshListView()
 
@@ -35,11 +32,9 @@ class MainActivity : AppCompatActivity() {
 
             val selectedReminderInfo = listView.adapter.getItem(position) as ReminderInfo
             val message = selectedReminderInfo.uid
-
             startActivity(
                 Intent(applicationContext, ReminderItemActivity::class.java).putExtra("selected_reminder",message)
             )
-
             refreshListView()
         }
 
@@ -67,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                         db.reminderDao().delete(selectedReminderInfo.uid!!)
                     }
 
-                    //refresh payments list
+                    //refresh reminder list
                     refreshListView()
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
@@ -99,6 +94,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     inner class LoadReminderInfoEntries : AsyncTask<String?, String?, List<ReminderInfo>>() {
         override fun doInBackground(vararg params: String?): List<ReminderInfo> {
             val db = Room
@@ -138,7 +134,6 @@ class MainActivity : AppCompatActivity() {
         val id = item.getItemId()
 
         if (id == R.id.action_add_reminder) {
-            //Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show()
             startActivity(
                 Intent(applicationContext, ReminderItemActivity::class.java)
             )
@@ -165,69 +160,5 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
 
-    }
-
-
-    private fun createReminderPlaceholders() {
-        val reminderInfo1 = ReminderInfo(
-            null,
-            title = "Test Reminder 1",
-            message = "This is a placeholder for a reminder",
-            location_x = "X coordinate for location",
-            location_y = "Y coordinate for location",
-            reminder_time = "2021-02-02T02:02",
-            creation_time = "2021-01-01T12:00:00.001",
-            creator_id = "testuser",
-            reminder_seen = "0"
-        )
-
-        val reminderInfo2 = ReminderInfo(
-                null,
-                title = "Hetki lyö",
-                message = "Viime hetki lyö",
-                location_x = "X coordinate for location",
-                location_y = "Y coordinate for location",
-                reminder_time = "2021-02-02T02:02",
-                creation_time = "2021-01-01T12:00:00.001",
-                creator_id = "testuser",
-                reminder_seen = "0"
-        )
-
-        val reminderInfo3 = ReminderInfo(
-                null,
-                title = "Tää yö",
-                message = "Ollaan vaan ja hengaillaan",
-                location_x = "X coordinate for location",
-                location_y = "Y coordinate for location",
-                reminder_time = "2021-02-02T22:45",
-                creation_time = "2021-01-01T02:00:00.001",
-                creator_id = "testuser",
-                reminder_seen = "0"
-        )
-
-        val reminderInfo4 = ReminderInfo(
-                null,
-                title = "admin only",
-                message = "Administrator's reminder",
-                location_x = "somewhere",
-                location_y = "here or there",
-                reminder_time = "2021-02-02T22:45",
-                creation_time = "2021-01-01T02:00:00.001",
-                creator_id = "admin",
-                reminder_seen = "0"
-        )
-
-        AsyncTask.execute{
-            val db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java,
-                getString(R.string.dbFileName)
-            ).build()
-            db.reminderDao().insert(reminderInfo1).toInt()
-            db.reminderDao().insert(reminderInfo2).toInt()
-            db.reminderDao().insert(reminderInfo3).toInt()
-            db.reminderDao().insert(reminderInfo4).toInt()
-            db.close()
-        }
     }
 }

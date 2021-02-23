@@ -22,4 +22,7 @@ interface UserDao {
 
     @Delete
     fun delete(user: UserInfo)
+
+    @Update
+    fun updateUserInfo(vararg userInfo: UserInfo)
 }
