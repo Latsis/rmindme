@@ -9,10 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Rmindme">
-        <activity android:name=".RegisterScreenActivity"></activity>
-        <activity android:name=".ReminderItemActivity" />
-        <activity android:name=".ProfileScreenActivity" />
-        <activity android:name=".MainActivity" />
+        <receiver
+            android:name=".ReminderReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
+
+        <activity
+            android:name=".RegisterScreenActivity"
+            android:parentActivityName=".LoginScreenActivity"/>
+        <activity
+            android:name=".ReminderItemActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ProfileScreenActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".MainActivity" />
         <activity
             android:name=".LoginScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">

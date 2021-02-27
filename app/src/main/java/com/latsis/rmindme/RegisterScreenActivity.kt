@@ -27,13 +27,13 @@ class RegisterScreenActivity : AppCompatActivity() {
         title = "Register"
 
         binding.registerProfileButton.setOnClickListener {
-            val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
-            val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
-            val passwordRepeatInput = findViewById<EditText>(R.id.editTextRegisterRepeatPassword).text
+            //val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
+            //val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
+            //val passwordRepeatInput = findViewById<EditText>(R.id.editTextRegisterRepeatPassword).text
 
-            if (usernameInput.isNotEmpty()) {
-                if (passwordInput.isNotEmpty()) {
-                    if (passwordInput.toString().equals(passwordRepeatInput.toString())) {
+            if (binding.editTextRegisterUsername.text.isNotEmpty()) {
+                if (binding.editTextRegisterPassword.text.isNotEmpty()) {
+                    if (binding.editTextRegisterPassword.text.toString().equals(binding.editTextRegisterRepeatPassword.text.toString())) {
                         CreateIfDoesNotExist().execute()
                     } else {
                         Toast.makeText(applicationContext,
@@ -56,20 +56,20 @@ class RegisterScreenActivity : AppCompatActivity() {
     @SuppressLint("StaticFieldLeak")
     inner class CreateIfDoesNotExist : AsyncTask<String?, String?, Boolean>() {
         override fun doInBackground(vararg params: String?): Boolean {
-            val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
-            val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
+            //val usernameInput = findViewById<EditText>(R.id.editTextRegisterUsername).text
+            //val passwordInput = findViewById<EditText>(R.id.editTextRegisterPassword).text
             val db = Room
                 .databaseBuilder(
                     applicationContext,
                     AppDatabase::class.java,
                     getString(R.string.dbFileName)
                 ).build()
-            val exists = db.userDao().findIfExists(usernameInput.toString())
+            val exists = db.userDao().findIfExists(binding.editTextRegisterUsername.text.toString())
             if (!exists) {
                 val userInfoInput = UserInfo(
                         null,
-                        username = usernameInput.toString(),
-                        password = passwordInput.toString()
+                        username = binding.editTextRegisterUsername.text.toString(),
+                        password = binding.editTextRegisterPassword.text.toString()
                 )
                 db.userDao().insert(userInfoInput)
                 db.close()

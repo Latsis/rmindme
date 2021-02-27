@@ -4,16 +4,19 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.latsis.rmindme.databinding.ActivityReminderItemBinding
 import com.latsis.rmindme.db.AppDatabase
 import com.latsis.rmindme.db.ReminderInfo
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ReminderItemActivity : AppCompatActivity() {
@@ -30,14 +33,6 @@ class ReminderItemActivity : AppCompatActivity() {
         val prefs = applicationContext.getSharedPreferences(
                 getString(R.string.sharedPreference), Context.MODE_PRIVATE)
         val loggedInUserId = prefs.getString("username",null).toString()
-
-        val selectedReminderTitleEditText: EditText = findViewById<EditText>(R.id.editTextReminderTitle)
-        val selectedReminderMessageEditText: EditText = findViewById<EditText>(R.id.editTextReminderText)
-        val selectedReminderTimeEditText: EditText = findViewById<EditText>(R.id.editTextReminderTime)
-        val selectedReminderDateEditText: EditText = findViewById<EditText>(R.id.editTextReminderDate)
-        val selectedReminderLocationXEditText: EditText = findViewById<EditText>(R.id.editTextReminderLocationX)
-        val selectedReminderLocationYEditText: EditText = findViewById<EditText>(R.id.editTextReminderLocationY)
-
 
         //if previous activity sent reminder id, fill input fields with existing information
         if(bundle!=null)
@@ -57,12 +52,12 @@ class ReminderItemActivity : AppCompatActivity() {
                 Log.d("Test", reminderInfo.message)
 
                 val dateAndTime = reminderInfo.reminder_time.split("T").toTypedArray()
-                selectedReminderTitleEditText.setText(reminderInfo.title, TextView.BufferType.EDITABLE)
-                selectedReminderMessageEditText.setText(reminderInfo.message, TextView.BufferType.EDITABLE)
-                selectedReminderTimeEditText.setText(dateAndTime[1])
-                selectedReminderDateEditText.setText(dateAndTime[0])
-                selectedReminderLocationXEditText.setText(reminderInfo.location_x, TextView.BufferType.EDITABLE)
-                selectedReminderLocationYEditText.setText(reminderInfo.location_y, TextView.BufferType.EDITABLE)
+                binding.editTextReminderTitle.setText(reminderInfo.title, TextView.BufferType.EDITABLE)
+                binding.editTextReminderText.setText(reminderInfo.message, TextView.BufferType.EDITABLE)
+                binding.editTextReminderTime.setText(dateAndTime[1])
+                binding.editTextReminderDate.setText(dateAndTime[0])
+                binding.editTextReminderLocationX.setText(reminderInfo.location_x, TextView.BufferType.EDITABLE)
+                binding.editTextReminderLocationY.setText(reminderInfo.location_y, TextView.BufferType.EDITABLE)
             }
         }
 
@@ -73,11 +68,11 @@ class ReminderItemActivity : AppCompatActivity() {
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
 
-        selectedReminderDateEditText.setOnClickListener {
+        binding.editTextReminderDate.setOnClickListener {
             val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                selectedReminderDateEditText.setText("" + addZeroDigit(year) + "-" + addZeroDigit(month + 1) + "-" + addZeroDigit(day))
+                binding.editTextReminderDate.setText("" + addZeroDigit(year) + "-" + addZeroDigit(month + 1) + "-" + addZeroDigit(day))
             }, day, month, year)
-            datePicker.updateDate(2021, 1 - 1, 1);
+            datePicker.updateDate(year, month, day);
             datePicker.show()
         }
 
@@ -85,9 +80,9 @@ class ReminderItemActivity : AppCompatActivity() {
         val hour = c.get(Calendar.HOUR_OF_DAY)
         val minute = c.get(Calendar.MINUTE)
 
-        selectedReminderTimeEditText.setOnClickListener {
+        binding.editTextReminderTime.setOnClickListener {
             val timePicker = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                selectedReminderTimeEditText.setText(""+ addZeroDigit(hour) + ":" + addZeroDigit(minute))
+                binding.editTextReminderTime.setText(""+ addZeroDigit(hour) + ":" + addZeroDigit(minute))
             }, hour, minute, true)
             timePicker.show()
         }
@@ -95,17 +90,57 @@ class ReminderItemActivity : AppCompatActivity() {
 
         binding.saveReminderButton.setOnClickListener {
 
+            if (binding.editTextReminderTitle.text.isEmpty()) {
+                Toast.makeText(
+                        applicationContext,
+                        "You must add a title for your reminder!",
+                        Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            if (binding.editTextReminderDate.text.isEmpty()) {
+                Toast.makeText(
+                        applicationContext,
+                        "You must add date and time for your reminder!",
+                        Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            if (binding.editTextReminderTime.text.isEmpty()) {
+                Toast.makeText(
+                        applicationContext,
+                        "You must add date and time for your reminder!",
+                        Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             val reminderInfoEdit = ReminderInfo(
                     uid = bundle?.getInt("selected_reminder"),
-                    title = selectedReminderTitleEditText.text.toString(),
-                    message = selectedReminderMessageEditText.text.toString(),
-                    location_x = selectedReminderLocationXEditText.text.toString(),
-                    location_y = selectedReminderLocationYEditText.text.toString(),
-                    reminder_time = selectedReminderDateEditText.text.toString() + "T" + selectedReminderTimeEditText.text.toString(),
+                    title = binding.editTextReminderTitle.text.toString(),
+                    message = binding.editTextReminderText.text.toString(),
+                    location_x = binding.editTextReminderLocationX.text.toString(),
+                    location_y = binding.editTextReminderLocationY.text.toString(),
+                    reminder_time = binding.editTextReminderDate.text.toString() + "T" + binding.editTextReminderTime.text.toString(),
                     creator_id = loggedInUserId,
                     creation_time = LocalDateTime.now().toString(),
                     reminder_seen = ""
             )
+
+            val reminderCalendar=GregorianCalendar.getInstance()
+            // if your date contains hours and minutes and its in the format dd.mm.yyyy HH:mm
+            val setReminderDate = reminderInfoEdit.reminder_time.split("T").toTypedArray()[0].split("-").toTypedArray()
+            val setReminderTime = reminderInfoEdit.reminder_time.split("T").toTypedArray()[1].split(":").toTypedArray()
+
+            reminderCalendar.set(Calendar.YEAR,setReminderDate[0].toInt())
+            reminderCalendar.set(Calendar.MONTH,setReminderDate[1].toInt()-1)
+            reminderCalendar.set(Calendar.DAY_OF_MONTH,setReminderDate[2].toInt())
+            reminderCalendar.set(Calendar.HOUR_OF_DAY, setReminderTime[0].toInt())
+            reminderCalendar.set(Calendar.MINUTE, setReminderTime[1].toInt())
+            reminderCalendar.set(Calendar.SECOND, 0)
+
 
             if(bundle!=null) {
                 AsyncTask.execute{
@@ -114,8 +149,20 @@ class ReminderItemActivity : AppCompatActivity() {
                             AppDatabase::class.java,
                             getString(R.string.dbFileName)
                     ).build()
-                    db.reminderDao().updateReminderInfo(reminderInfoEdit)
+                    val uuid = db.reminderDao().updateReminderInfo(reminderInfoEdit)
                     //db.close()
+
+                    if (reminderCalendar.timeInMillis > Calendar.getInstance().timeInMillis) {
+                        // if new time is set in the future, set (replace) reminder
+                        val message =
+                            "Don't forget to ${reminderInfoEdit.title} at ${reminderInfoEdit.reminder_time}"
+                        MainActivity.setReminder(
+                            applicationContext,
+                            reminderInfoEdit.uid!!.toInt(),
+                            reminderCalendar.timeInMillis,
+                            message
+                        )
+                    }
                 }
             } else {
                 AsyncTask.execute{
@@ -124,8 +171,30 @@ class ReminderItemActivity : AppCompatActivity() {
                             AppDatabase::class.java,
                             getString(R.string.dbFileName)
                     ).build()
-                    db.reminderDao().insert(reminderInfoEdit).toInt()
+                    val uuid = db.reminderDao().insert(reminderInfoEdit).toInt()
                     //db.close()
+
+                    if (reminderCalendar.timeInMillis > Calendar.getInstance().timeInMillis) {
+                        // if reminder time is set in the future, set reminder
+                        Log.d("Test: reminder_time in millis", reminderCalendar.timeInMillis.toString())
+                        Log.d("Test", "setting reminder")
+                        val message =
+                                "Don't forget to ${reminderInfoEdit.title} at ${reminderInfoEdit.reminder_time}"
+                        MainActivity.setReminder(
+                                applicationContext,
+                                uuid,
+                                reminderCalendar.timeInMillis,
+                                message
+                        )
+                    }
+                }
+
+                if(reminderCalendar.timeInMillis>Calendar.getInstance().timeInMillis){
+                    Toast.makeText(
+                            applicationContext,
+                            "Reminder saved!",
+                            Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 

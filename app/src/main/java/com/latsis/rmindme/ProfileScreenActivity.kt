@@ -33,8 +33,8 @@ class ProfileScreenActivity : AppCompatActivity() {
         showCurrentUserName(currentUsername.toString())
 
         binding.saveProfileModificationsButton.setOnClickListener {
-            val newPasswordInput = findViewById<EditText>(R.id.editTextProfileNewPassword).text
-            val newPasswordRepeatInput = findViewById<EditText>(R.id.editTextProfileRepeatNewPassword).text
+            val newPasswordInput = binding.editTextProfileNewPassword.text
+            val newPasswordRepeatInput = binding.editTextProfileRepeatNewPassword.text
 
             if (newPasswordInput.isNotEmpty()) {
                 if (newPasswordInput.toString().equals(newPasswordRepeatInput.toString())) {
@@ -72,7 +72,7 @@ class ProfileScreenActivity : AppCompatActivity() {
     }
 
     private fun showCurrentUserName(currentUsername: String) {
-        val usernameTextView: TextView = findViewById<TextView>(R.id.textViewCurrentUsername)
+        val usernameTextView: TextView = binding.textViewCurrentUsername
         usernameTextView.text = ("Currently logged in as $currentUsername")
 
     }
