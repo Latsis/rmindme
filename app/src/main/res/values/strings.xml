@@ -10,4 +10,6 @@
     <string name="add_new_reminder">Add new reminder</string>
     <string name="profile">Profile</string>
     <string name="sign_out">Sign out</string>
+    <string name="my_reminders">My reminders</string>
+    <string name="upcoming_reminders">Upcoming reminders</string>
 </resources>

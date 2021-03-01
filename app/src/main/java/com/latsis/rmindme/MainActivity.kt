@@ -1,12 +1,11 @@
 package com.latsis.rmindme
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
+import android.app.Notification.EXTRA_NOTIFICATION_ID
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +37,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         title = "Rmind.me"
         listView = binding.listView
+
+        val bundle :Bundle ?=intent.extras
+        if (bundle?.getInt("notified_reminder_id")!= null) {
+            //TODO use this if necessary to detect whether activity started from
+            // application or notification
+        }
 
         refreshListView()
 
@@ -72,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                             )
                             .build()
                         db.reminderDao().delete(selectedReminderInfo.uid!!)
+                        //db.reminderDao().updateReminderSeen("1", selectedReminderInfo.uid!!)
                     }
                     cancelReminder(applicationContext, selectedReminderInfo.uid!!)
                     Log.d("Test", "removing reminder")
@@ -120,7 +126,8 @@ class MainActivity : AppCompatActivity() {
                 )
                 .build()
             //val reminderInfos = db.reminderDao().getReminderInfos()
-            val reminderInfos = db.reminderDao().getUserReminderInfos(getUserId())
+            //val reminderInfos = db.reminderDao().getUserReminderInfos(getUserId())
+            val reminderInfos = db.reminderDao().getPreviousUserReminderInfos(getUserId())
             db.close()
             return reminderInfos
         }
@@ -133,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                     listView.adapter = adaptor
                 } else {
                     listView.adapter = null
-                    Toast.makeText(applicationContext, "No reminders to show", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "No previous reminders to show", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -151,6 +158,12 @@ class MainActivity : AppCompatActivity() {
         if (id == R.id.action_add_reminder) {
             startActivity(
                 Intent(applicationContext, ReminderItemActivity::class.java)
+            )
+            return true
+        }
+        if (id == R.id.action_show_all_reminders) {
+            startActivity(
+                Intent(applicationContext, ReminderListActivity::class.java)
             )
             return true
         }
@@ -179,24 +192,45 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        fun showNofitication(context: Context, message: String) {
+        fun showNotification(context: Context, message: String, reminderid: Int) {
 
-            val CHANNEL_ID = "RMINDME_NOTIFICATION_CHANNEL"
+            val rmindmeNotificationChannel = "RMINDME_NOTIFICATION_CHANNEL"
             val notificationId = Random.nextInt(10, 1000) + 5
 
-            val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.notification_icon)
+            val notificationIntent = Intent(context, LoginScreenActivity::class.java)
+            notificationIntent.putExtra("notified_reminder_id", reminderid)
+            val notificationPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
+                addNextIntentWithParentStack(notificationIntent)
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
+            val snoozeIntent = Intent(context, ReminderReceiver::class.java)
+            snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, 0)
+            snoozeIntent.putExtra("message", message)
+            snoozeIntent.putExtra("uid", reminderid)
+
+            val snoozePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    reminderid,
+                    snoozeIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val notificationBuilder = NotificationCompat.Builder(context, rmindmeNotificationChannel)
+                    .setSmallIcon(R.drawable.ic_baseline_event_note_24)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(message)
                     .setStyle(NotificationCompat.BigTextStyle().bigText(message))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setGroup(CHANNEL_ID)
+                    .setGroup(rmindmeNotificationChannel)
+                    .setContentIntent(notificationPendingIntent)
+                    .setAutoCancel(true) //remove notification when tapped
+                    .addAction(R.drawable.ic_baseline_event_note_24, "Remind me in 5 minutes", snoozePendingIntent)
 
             val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val channel = NotificationChannel(
-                    CHANNEL_ID,
+                    rmindmeNotificationChannel,
                     context.getString(R.string.app_name),
                     NotificationManager.IMPORTANCE_DEFAULT
             ).apply {

@@ -20,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
                INSTANCE = Room.databaseBuilder(
                        context.applicationContext,
                        AppDatabase::class.java,
-                       "rmindme_database"
+                       "com.latsis.rmindme"
                ).build()
             }
          }

@@ -76,7 +76,6 @@ class ReminderItemActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        //val pickTimeEditText = findViewById<EditText>(R.id.editTextReminderTime)
         val hour = c.get(Calendar.HOUR_OF_DAY)
         val minute = c.get(Calendar.MINUTE)
 
@@ -126,11 +125,10 @@ class ReminderItemActivity : AppCompatActivity() {
                     reminder_time = binding.editTextReminderDate.text.toString() + "T" + binding.editTextReminderTime.text.toString(),
                     creator_id = loggedInUserId,
                     creation_time = LocalDateTime.now().toString(),
-                    reminder_seen = ""
+                    reminder_seen = "1"
             )
 
             val reminderCalendar=GregorianCalendar.getInstance()
-            // if your date contains hours and minutes and its in the format dd.mm.yyyy HH:mm
             val setReminderDate = reminderInfoEdit.reminder_time.split("T").toTypedArray()[0].split("-").toTypedArray()
             val setReminderTime = reminderInfoEdit.reminder_time.split("T").toTypedArray()[1].split(":").toTypedArray()
 
@@ -149,16 +147,19 @@ class ReminderItemActivity : AppCompatActivity() {
                             AppDatabase::class.java,
                             getString(R.string.dbFileName)
                     ).build()
-                    val uuid = db.reminderDao().updateReminderInfo(reminderInfoEdit)
+                    db.reminderDao().updateReminderInfo(reminderInfoEdit)
+                    val uuid = bundle.getInt("selected_reminder")
                     //db.close()
+                    Log.d("TEST", uuid.toString())
 
                     if (reminderCalendar.timeInMillis > Calendar.getInstance().timeInMillis) {
+                        db.reminderDao().updateReminderSeen("0", uuid)
                         // if new time is set in the future, set (replace) reminder
                         val message =
-                            "Don't forget to ${reminderInfoEdit.title} at ${reminderInfoEdit.reminder_time}"
+                            "Hey ${reminderInfoEdit.creator_id}, don't forget to ${reminderInfoEdit.title} at ${reminderInfoEdit.reminder_time}"
                         MainActivity.setReminder(
                             applicationContext,
-                            reminderInfoEdit.uid!!.toInt(),
+                            uuid,
                             reminderCalendar.timeInMillis,
                             message
                         )
@@ -173,13 +174,15 @@ class ReminderItemActivity : AppCompatActivity() {
                     ).build()
                     val uuid = db.reminderDao().insert(reminderInfoEdit).toInt()
                     //db.close()
+                    Log.d("TEST", uuid.toString())
 
                     if (reminderCalendar.timeInMillis > Calendar.getInstance().timeInMillis) {
+                        db.reminderDao().updateReminderSeen("0", uuid)
                         // if reminder time is set in the future, set reminder
                         Log.d("Test: reminder_time in millis", reminderCalendar.timeInMillis.toString())
                         Log.d("Test", "setting reminder")
                         val message =
-                                "Don't forget to ${reminderInfoEdit.title} at ${reminderInfoEdit.reminder_time}"
+                                "Hey ${reminderInfoEdit.creator_id}, don't forget to ${reminderInfoEdit.title} at ${reminderInfoEdit.reminder_time}"
                         MainActivity.setReminder(
                                 applicationContext,
                                 uuid,
