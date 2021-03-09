@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.latsis.rmindme">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
@@ -9,13 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Rmindme">
-        <activity android:name=".ReminderListActivity"></activity>
-
+        <receiver
+            android:name=".GeofencingReceiver"
+            android:enabled="true"
+            android:exported="true" />
         <receiver
             android:name=".ReminderReceiver"
             android:enabled="true"
             android:exported="true" />
 
+        <activity
+            android:name=".MapActivity"
+            android:parentActivityName=".ReminderItemActivity" />
+        <activity
+            android:name=".ReminderListActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".RegisterScreenActivity"
             android:parentActivityName=".LoginScreenActivity" />
@@ -35,6 +47,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDaMCIGjwxv4gUMQJvtCWM40ssEEgqEut4" />
     </application>
 
 </manifest>

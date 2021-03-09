@@ -3,6 +3,7 @@ package com.latsis.rmindme
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -86,6 +87,20 @@ class ReminderItemActivity : AppCompatActivity() {
             timePicker.show()
         }
 
+
+        binding.editTextReminderLocationX.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("latitude", binding.editTextReminderLocationX.text.toString())
+            intent.putExtra("longitude", binding.editTextReminderLocationY.text.toString())
+            startActivityForResult(intent, 1)
+        }
+
+        binding.editTextReminderLocationY.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("latitude", binding.editTextReminderLocationX.text.toString())
+            intent.putExtra("longitude", binding.editTextReminderLocationY.text.toString())
+            startActivityForResult(intent, 1)
+        }
 
         binding.saveReminderButton.setOnClickListener {
 
@@ -214,6 +229,24 @@ class ReminderItemActivity : AppCompatActivity() {
         return when (number <= 9) {
             true -> "0${number}"
             false -> number.toString()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // If you have multiple activities returning results then you should include unique request codes for each
+        if (requestCode == 1) {
+
+            // The result code from the activity started using startActivityForResults
+            if (resultCode == RESULT_OK) {
+                Log.d("MapActivity", "RESULT_OK")
+                val locationXCoordinate = data!!.getStringExtra("latitude")
+                val locationYCoordinate = data!!.getStringExtra("longitude")
+                binding.editTextReminderLocationX.setText(locationXCoordinate)
+                binding.editTextReminderLocationY.setText(locationYCoordinate)
+
+            }
         }
     }
 
