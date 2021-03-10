@@ -269,6 +269,8 @@ class MainActivity : AppCompatActivity() {
 
         fun cancelReminder(context: Context, uid: Int) {
             WorkManager.getInstance(context).cancelUniqueWork(uid.toString());
-            }
+        }
+
+        //TODO: tänne tarttis geofencingin logiikan
     }
 }

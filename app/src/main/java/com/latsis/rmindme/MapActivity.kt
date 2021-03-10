@@ -8,6 +8,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.AsyncTask
 import android.util.Log
 import android.view.Menu
@@ -22,11 +23,20 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.latsis.rmindme.db.AppDatabase
 import java.util.*
+
+const val GEOFENCE_RADIUS = 500
+const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
+const val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days
+const val GEOFENCE_DWELL_DELAY =  10 * 1000 // 10 secs // 2 minutes
+const val GEOFENCE_LOCATION_REQUEST_CODE = 12345
+const val CAMERA_ZOOM_LEVEL = 13f
+const val LOCATION_REQUEST_CODE = 123
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -58,11 +68,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        val oulu = LatLng(bundleCoordinatesX, bundleCoordinatesY)
+        val reminderPoi = LatLng(bundleCoordinatesX, bundleCoordinatesY)
         //val oulu = LatLng(65.08238, 25.44262)
         val zoomLevel = 15f
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(oulu, zoomLevel))
-        map.addMarker(MarkerOptions().position(oulu))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(reminderPoi, zoomLevel))
+        map.addMarker(MarkerOptions().position(reminderPoi))
+        map.addCircle(
+            CircleOptions()
+                .center(reminderPoi)
+                .strokeColor(Color.argb(50,70,70,70))
+                .fillColor(Color.argb(70,150, 150, 150))
+                .radius(GEOFENCE_RADIUS.toDouble())
+        )
 
         setMapLongClick(map)
         setPoiClick(map)
@@ -86,6 +103,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     .title("Dropped pin")
                     .snippet(snippet)
             )
+            map.addCircle(
+                CircleOptions()
+                    .center(it)
+                    .strokeColor(Color.argb(50,70,70,70))
+                    .fillColor(Color.argb(70,150, 150, 150))
+                    .radius(GEOFENCE_RADIUS.toDouble())
+            )
 
             val backwardsIntent = Intent()
             backwardsIntent.putExtra("latitude", it.latitude.toString())
@@ -94,20 +118,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             //return to reminderItemActivity
             finish()
-
-
-/*
-            val database = Firebase.database("https://lateral-vision-303710-default-rtdb.europe-west1.firebasedatabase.app/")
-            val myRef = database.getReference("locations")
-            database.getReference("test_url").setValue("https://oulu.fi")
-            println("Reference: $myRef")
-            val key = myRef.push().key
-//            val data = key?.let { it1 -> myRef.push().child("locations/").setValue("Hello world") }
-            val data = myRef.push().child("data").setValue("Hello world")
-//            myRef.setValue("Davido")
-
-            println("Key: $key")
-            println("Data: $data")*/
         }
     }
 
@@ -117,11 +127,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(it.latLng)
                 .title(it.name)
             )
-
-
             poiMarker.showInfoWindow()
-
-
         }
     }
 
