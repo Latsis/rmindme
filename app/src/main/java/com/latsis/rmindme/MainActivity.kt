@@ -1,10 +1,12 @@
 package com.latsis.rmindme
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
 import android.app.Notification.EXTRA_NOTIFICATION_ID
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.view.Menu
 import android.view.MenuItem
@@ -15,21 +17,37 @@ import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.room.Room
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.LocationServices
 import com.latsis.rmindme.databinding.ActivityMainBinding
 import com.latsis.rmindme.db.AppDatabase
 import com.latsis.rmindme.db.ReminderInfo
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
+
+const val GEOFENCE_RADIUS = 500
+const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
+const val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days
+const val GEOFENCE_DWELL_DELAY =  10 * 1000 // 10 secs // 2 minutes
+const val GEOFENCE_LOCATION_REQUEST_CODE = 12345
+const val CAMERA_ZOOM_LEVEL = 13f
+const val LOCATION_REQUEST_CODE = 123
+const val REQUEST_LOCATION_PERMISSION = 456
+const val REQUEST_VIRTUAL_LOCATION = 11111
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var listView: ListView
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
@@ -43,6 +61,25 @@ class MainActivity : AppCompatActivity() {
             //TODO use this if necessary to detect whether activity started from
             // application or notification
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSION
+            )
+        }
+
+        fusedLocationClient.setMockMode(true)
 
         refreshListView()
 
@@ -192,6 +229,15 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
+        fun removeGeofences(context: Context, triggeringGeofenceList: MutableList<Geofence>) {
+            val geofenceIdList = mutableListOf<String>()
+            for (entry in triggeringGeofenceList) {
+                geofenceIdList.add(entry.requestId)
+            }
+            LocationServices.getGeofencingClient(context).removeGeofences(geofenceIdList)
+        }
+
+
         fun showNotification(context: Context, message: String, reminderid: Int) {
 
             val rmindmeNotificationChannel = "RMINDME_NOTIFICATION_CHANNEL"
@@ -270,7 +316,5 @@ class MainActivity : AppCompatActivity() {
         fun cancelReminder(context: Context, uid: Int) {
             WorkManager.getInstance(context).cancelUniqueWork(uid.toString());
         }
-
-        //TODO: tänne tarttis geofencingin logiikan
     }
 }

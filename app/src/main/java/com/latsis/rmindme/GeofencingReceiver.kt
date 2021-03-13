@@ -12,6 +12,7 @@ import java.util.*
 
 class GeofencingReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        Log.d("Geofence", "GEOFENCE TRIGGERED")
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         val geofencingTransition = geofencingEvent.geofenceTransition
@@ -24,25 +25,11 @@ class GeofencingReceiver : BroadcastReceiver() {
                 text = "DEFAULT STRING"
             }
 
-            MainActivity.setReminder(
-                context,
-                uid,
-                Calendar.getInstance().timeInMillis + 1000, //alert in 1 second
-                text
-            )
-
+            Log.d("Geofence", "GEOFENCE TRIGGERED")
             MainActivity.showNotification(context, text, uid)
-            val db = Room
-                .databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    "com.latsis.rmindme"
-                )
-                .build()
-            db.reminderDao().updateReminderSeen("1", uid)
             // remove geofence
             val triggeringGeofences = geofencingEvent.triggeringGeofences
-            //MainActivity.removeGeofences(context, triggeringGeofences)
+            MainActivity.removeGeofences(context, triggeringGeofences)
         }
     }
 }

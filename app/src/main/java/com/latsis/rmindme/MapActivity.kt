@@ -23,24 +23,16 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.latsis.rmindme.db.AppDatabase
 import java.util.*
 
-const val GEOFENCE_RADIUS = 500
-const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
-const val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days
-const val GEOFENCE_DWELL_DELAY =  10 * 1000 // 10 secs // 2 minutes
-const val GEOFENCE_LOCATION_REQUEST_CODE = 12345
-const val CAMERA_ZOOM_LEVEL = 13f
-const val LOCATION_REQUEST_CODE = 123
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
+    lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var marker: Marker
     private val TAG = MapActivity::class.java.simpleName
     private val REQUEST_LOCATION_PERMISSION = 1
     private var bundleCoordinatesX: Double = 65.08238
@@ -50,7 +42,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        title = "Reminder location"
+        title = "Select location"
         val bundle :Bundle ?=intent.extras
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -81,10 +73,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .radius(GEOFENCE_RADIUS.toDouble())
         )
 
+        enableMyLocation()
         setMapLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
-        enableMyLocation()
     }
 
 
@@ -100,7 +92,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             map.addMarker(
                 MarkerOptions()
                     .position(it)
-                    .title("Dropped pin")
+                    .title("Point Of Interest")
                     .snippet(snippet)
             )
             map.addCircle(
